@@ -11,45 +11,52 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import cartago.Artifact;
 import cartago.OPERATION;
 import cartago.ObsProperty;
-
-public class MqttSubscriber extends Artifact implements MqttCallback  {
+public class MqttSubscriber extends Artifact implements MqttCallback   {
 
 	/** The broker url. */
 	private static final String brokerUrl ="tcp://193.49.165.77";
-    public String temperature;
-	
-	
+
 	/** The client id. */
 	private static final String clientId = "clientId";
+    public int temperature;
+	
+  public String number ="";
+
 
 	/** The topic. */
 	private static final String topic = "emse/fayol/e4/S424/sensors/24a89ddc-23c8-4d9f-9f5e-cff4eba32fb5/metrics/TEMP";
+   int i=1;
 
+	void init(int ae) {
 
+		
+		
+		defineObsProperty("room", "....");
+		
+	}
+	@OPERATION
+	public void subscribe(String topic,String number) {
 
-	public void subscribe(String topic) {
+		this.number=number;
 		//	logger file name and pattern to log
 		MemoryPersistence persistence = new MemoryPersistence();
 
 		try
 		{
 
-			MqttClient sampleClient = new MqttClient(brokerUrl, clientId, persistence);
+			MqttClient sampleClient = new MqttClient(brokerUrl, clientId);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);
 
-			System.out.println("checking");
-			System.out.println("Mqtt Connecting to broker: " + brokerUrl);
+		
 
 			sampleClient.connect(connOpts);
-			System.out.println("Mqtt Connected");
-
+			
 			sampleClient.setCallback(this);
 			sampleClient.subscribe(topic);
 
-			System.out.println("Subscribed");
-			System.out.println("Listening");
-
+			
+          
 		} catch (MqttException me) {
 			System.out.println(me);
 		}
@@ -61,45 +68,23 @@ public class MqttSubscriber extends Artifact implements MqttCallback  {
 	}
 
 	//Called when a outgoing publish is complete
-	
+	public void deliveryComplete(IMqttDeliveryToken arg0) {
+	}
 
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
 
-		System.out.println("| Topic:" + topic);
-		System.out.println("| Message: " +message.toString());
-		System.out.println("-------------------------------------------------");
-		this.temperature=topic;
+        if(i==1)
+        {  
+        	
+
+
+		defineObsProperty("temperature"+this.number, Float.parseFloat(message.toString()));
+
+      i++;
+       
+	
+        }
 
 	}
-	
 
-	
-
-	@Override
-	public void deliveryComplete(IMqttDeliveryToken token) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
-	
-	
-	
-	void init(int initialValue) {
-		System.out.println("Subscriber running");
-
-		defineObsProperty("temperature", initialValue);
-	}
-	@OPERATION
-	void inc() {
-		new MqttSubscriber().subscribe(topic);
-		ObsProperty prop = getObsProperty("temperature");
-		
-		signal("tick");
-	}
-	
-	
-	
-	
-	
 }

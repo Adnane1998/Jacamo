@@ -10,22 +10,43 @@
 +!setup : true <-
 	!setupCounter(Id);
 	+mqttsubscriber(Id);
-	.print(Id)
-	!increment.
+	!gettemperature.
+	
 /* Plans */
 
-+!increment : ready[source(Ag)] & mqttsubscriber(Id) <-
++!gettemperature :mqttsubscriber(Id) <-
             .wait(1000);
-	for (.range(I,1,100)) {
-		.wait(1000);
-		inc[artifact_id(Id)];
-		.print("Subscribe request");
+	for (.range(I,1,2)) {
+		.wait(10000);
+		
+		subscribe("emse/fayol/e4/S424/sensors/24a89ddc-23c8-4d9f-9f5e-cff4eba32fb5/metrics/TEMP","S424")
+	    
 		}.
-+!increment : not ready[source(Ag)] <-
-	!increment.
+
+	
+	
++!observe(Name) : true <-
+                       lookupArtifact(Name,Id);
+                       focus(Id).
+-!observe(Name) <- .print("Error in looking for artifact ", Name).
+
+//+temperatureS424(V) <- .println("Agent observed new value ", V).
+//+temperatureS424(V)[artifact_id(Id)] : V>60 <- stopFocus(Id).   	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 +!setupCounter(C) : true <-
-	makeArtifact("mqttsubscriber","tools.MqttSubscriber",[10],C);
-	.broadcast(tell,artifact_counter_is(mqttsubscriber)).
+	makeArtifact("mqttsubscriber","tools.MqttSubscriber",[17],C);
+	 !observe(mqttsubscriber).
+ 
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }
 
