@@ -4,25 +4,37 @@
 
 /* Initial goals */
 
++activitystream("as:Announce").
 
-!setup.
+
 
 +!setup : true <-
 	!setupCounters(Id);
+	       +activitystream("as:Announce");
+	      makeArtifact("something","tools.Announce",[13],DS);
+          .broadcast(tell,artifact_announce_is(something));
+          
 	+s422(Id);
 	!gettemperature.
 	
 /* Plans */
++artifact_announce_is(Name)[source(Sender)] : true <-
+                                           .println("Ready")
+                                           .send(Sender,tell,ready);
+                                            !setupCounters(Id);
+                                           !observe(Name);
+                                           .
 
 +!gettemperature : s422(Id) <-
-            .wait(1000);
-	for (.range(I,1,2)) {
+            
+	for (.range(I,1,199)) {
 		.wait(10000);
-		subscribe("emse/fayol/e4/Hall4Nord/sensors/757e0b46-0efe-4f36-bf2c-e8008e49d950/metrics/TEMP","S422");
+		
+		subscribe("s422/temp","S422");
 		
 		
 		}.
-
+    
 	
 	
 
@@ -33,21 +45,48 @@
                        focus(Id).
 -!observe(Name) <- .print("Error in looking for artifact ", Name).
 
++subscribeS422(V)  <-        .wait(1000);
+	for (.range(I,1,199)) {
+		.wait(10000);
+		subscribe("s422/temp","S422");
+		+sender_temperature(V);
+		
+		
+		}.
 
-+temperatureS422(V) <- .println("The temperature in S422 is ", V);
-                       if(V<18.00) { .print("It's cold");}
-                       if(V>18.00 & V<24.00) {.print("mild");}
-                       if(V>24.00) {.print("hot");}.
-           
++temperatureS422(V) : activitystream(W) <- 
+               
+                 
+		
+		               
+		               if(W =="as:Announce")
+		               {
+	                   .println("Hello The temperature in S422 is ",V);
+                       if(V<=20.00) { .print("It's cold");announce("S422","cold");}
+                       if(V>20.00 & V<=24.00) {.print("mild");announce("S422","mild"); }
+                       if(V>24.00) {.print("hot");announce("S422","hot");};
+                    };
+                        if (W =="as:Reject")
+		               {
+	   .print("yes")
+                    }.
+		
                        
+           
+   +!Contradiction :activitystream(W) <- .print("Still working on it...").
+                                           
+                                   
+                                   
+                                
                      
 
 +temperatureS422(V)[artifact_id(Id)] : V>60 <- stopFocus(Id).   
 
 	
+	+!increment : not ready[source(Ag)] <-
+	!increment.
 	
-	
-+!announce(v) :true <- .broadcast(tell,artifact_counter_is(mqttsubscriber)). 	
+	 	
 	
 	
 	
@@ -56,7 +95,8 @@
 	
 	
 +!setupCounters(D) : true <-
-	makeArtifact("s422","tools.MqttSubscriber",[12],D);
+	makeArtifact("s422","tools.MqttSubscriber",["emse/fayol/e4/Hall4Nord/sensors/757e0b46-0efe-4f36-bf2c-e8008e49d950/metrics/TEMP","S422"],D);
+
 	 !observe(s422).
 	/* .broadcast(tell,artifact_counter_is(mqttsubscriber)). */
 { include("$jacamoJar/templates/common-cartago.asl") }
