@@ -1,4 +1,4 @@
-// Agent sample_agent in project cps2_project
+
 
 /* Initial beliefs and rules */
 

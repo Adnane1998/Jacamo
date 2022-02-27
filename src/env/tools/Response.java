@@ -19,7 +19,7 @@ public class Response extends Artifact{
 
 		Room_list.add("S423");
 		Room_list.add("S424");
-		
+		Room_list.add("S425");
 		Room_list.add("S422");
 		Activity_stream.add("as:Reject");
 		Activity_stream.add("as:Accept");
@@ -58,9 +58,9 @@ public class Response extends Artifact{
 		if(Activity_stream.get(rand_activity) == "as:Reject")
 		{    
 			
-			
-			System.out.println(Room_list.get(rand_room));
 			System.out.println("Offer Rejected");
+			System.out.println("Please"+Room_list.get(rand_room)+"can you tell me");
+		
 			if(V !="cold" )
 			{
 			System.out.println("is it cold?");

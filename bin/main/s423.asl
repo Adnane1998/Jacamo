@@ -64,7 +64,7 @@
                        if(V>18.00 & V<=22.00 & W == "mild") {.print("Accepeted! my temperature is mild too")}
                        elif (V>18.00 & V<=22.00 & W \== "mild") {.print("Reject!For me its mild.Can you monitor another location?");.send(S,tell,activitystream("as:Offer"));.send(S,achieve,Contradiction)}
                        if(V>22.00  & W  == "hot") {.print("Accepeted! my temperature is hot too");}
-                        elif (V>22.00 & W == "hot") {.print("Reject!For me its hot.Can you monitor another location?");.send(S,tell,activitystream("as:Offer"));.send(S,achieve,Contradiction)}.
+                        elif (V>22.00 & W \== "hot") {.print("Reject!For me its hot.Can you monitor another location?");.send(S,tell,activitystream("as:Offer"));.send(S,achieve,Contradiction)}.
                     
 		
                        

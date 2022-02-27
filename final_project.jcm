@@ -17,6 +17,7 @@ mas final_project {
     agent s424
     agent s423
     agent s422 
+      agent s425
     asl-path: src/agt
               src/agt/inc
     

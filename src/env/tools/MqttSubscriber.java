@@ -93,15 +93,17 @@ public class MqttSubscriber extends Artifact implements MqttCallback   {
 
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
          
-       
+       if(i==1)
+       {
           float v=Float.parseFloat(message.toString());
    
          defineObsProperty("temperature"+this.number,v );
 
          this.isdone = 1;
          isalreadyprocessed.add(number);
+         i++;
         
-       
+       }
 	
         
 
