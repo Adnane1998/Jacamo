@@ -8,18 +8,19 @@
 
 +!setup : true <-
 	!setupCounters(Id);
-	      makeArtifact("something","tools.Announce",[15],D);
-          .broadcast(tell,artifact_announce_is(something));
+	      makeArtifact("announce","tools.Announce",[15],D);
+          .broadcast(tell,artifact_announce_is(announce));
 	+s424(Id);
 	!gettemperature.
 	
 /* Plans */
-+artifact_announce_is(Name)[source(Sender)] : true <-
++artifact_announce_is(Name,Name2)[source(Sender)] : true <-
                                            .println("Ready")
                                            .send(Sender,tell,ready);
                                             +sender(Sender);
                                             !setupCounters(Id)
                                            !observe(Name);
+                                             !observe(Name2);
                                            .
 
 +!gettemperature : s424(Id) <-
@@ -49,7 +50,7 @@
 		
 		}.
 
-+temperatureS424(V) : temperature(W)  & sender(S) <- .println("Hello The temperature in S424 is ",V);
++temperatureS424(V) : temperature(W)  & sender(S) <- .println(" The temperature in S424 is ",V);
                                            
                
                  
@@ -58,10 +59,11 @@
 		
 	
                        if(V<=21.00  & W == "cold") { .print("Accepted!It's cold for me too");}
-                        elif(V<=21.00 & W   \== "cold") {.print("Reject!For me its cold.Can you monitor another location");.send(S,tell,activitystream("as:Offer"));.send(S,achieve,Contradiction)}
+                        elif(V<=21.00 & W   \== "cold") {.print("Reject!For me its cold.Can you monitor another location?");.send(S,tell,activitystream("as:Offer"));.send(S,achieve,Contradiction)}
                        if(V>21.00 & V<=25.00 & W == "mild") {.print("Accepeted! my temperature is mild too")}
-                       elif (V>21.00 & V<=25.00 & W \== "mild") {.print("Reject!For me its mild.Can you monitor another location");.send(S,tell,activitystream("as:Offer"));.send(S,achieve,Contradiction)}
-                       if(V>=25.00) {.print("hot");}.
+                       elif (V>21.00 & V<=25.00 & W \== "mild") {.print("Reject!For me its mild.Can you monitor another location?");.send(S,tell,activitystream("as:Offer"));.send(S,achieve,Contradiction)}
+                       if(V>25.00  & W  == "hot") {.print("Accepeted! my temperature is hot too");}
+                        elif (V>25.00 & W == "hot") {.print("Reject!For me its hot.Can you monitor another location?");.send(S,tell,activitystream("as:Offer"));.send(S,achieve,Contradiction)}.
                     
 		
                        

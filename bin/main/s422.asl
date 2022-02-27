@@ -11,8 +11,9 @@
 +!setup : true <-
 	!setupCounters(Id);
 	       +activitystream("as:Announce");
-	      makeArtifact("something","tools.Announce",[13],DS);
-          .broadcast(tell,artifact_announce_is(something));
+	      makeArtifact("announce","tools.Announce",[13],DS);
+	      makeArtifact("response","tools.Response",[14],D);
+          .broadcast(tell,artifact_announce_is(announce,response));
           
 	+s422(Id);
 	!gettemperature.
@@ -65,15 +66,12 @@
                        if(V<=20.00) { .print("It's cold");announce("S422","cold");}
                        if(V>20.00 & V<=24.00) {.print("mild");announce("S422","mild"); }
                        if(V>24.00) {.print("hot");announce("S422","hot");};
-                    };
-                        if (W =="as:Reject")
-		               {
-	   .print("yes")
                     }.
-		
-                       
            
-   +!Contradiction :activitystream(W) <- .print("Still working on it...").
+   +!Contradiction :activitystream(W)[source(Reciever)] <- 
+                                         
+                                           response("S422","mild",Reciever).
+                                           
                                            
                                    
                                    
